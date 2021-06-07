@@ -24,7 +24,7 @@ pub fn decrypt(packet: &Bytes, session: u32, is_first_packet: bool) -> Bytes {
 
 #[cfg(test)]
 mod test {
-    use crate::server::world::decrypt::decrypt;
+    use crate::server::world::decrypt;
 
     #[test]
     fn test_decrypt_1() {
