@@ -6,7 +6,7 @@ pub fn decrypt(packet: &Bytes) -> Bytes {
 
 #[cfg(test)]
 mod test {
-    use crate::world::decrypt::decrypt;
+    use crate::client::world::decrypt::decrypt;
 
     #[test]
     fn test_decrypt() {

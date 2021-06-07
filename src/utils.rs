@@ -4,9 +4,14 @@ pub type Bytes = Vec<u8>;
 pub type Mask = Vec<bool>;
 
 pub const CLIENT_ENCRYPTION_TABLE: &[u8] = &[0x00, 0x20, 0x2D, 0x2E, 0x30, 0x31, 0x32, 0x33,
-                                             0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0xFF, 0x00];
+    0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0xFF, 0x00];
 pub const CLIENT_DECRYPTION_TABLE: &[u8] = &[0x00, 0x20, 0x2D, 0x2E, 0x30, 0x31, 0x32, 0x33,
-                                             0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x0A, 0x00];
+    0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x0A, 0x00];
+
+pub const SERVER_ENCRYPTION_TABLE: &[u8] = &[0x00, 0x20, 0x2D, 0x2E, 0x30, 0x31, 0x32, 0x33,
+    0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x0A, 0x00];
+pub const SERVER_DECRYPTION_TABLE: &[u8] = &[0x00, 0x20, 0x2D, 0x2E, 0x30, 0x31, 0x32, 0x33,
+    0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0xFF, 0x00];
 
 pub fn get_mask_part(byte: u8, charset: &Bytes) -> bool {
     match byte {
@@ -58,7 +63,7 @@ pub fn pack(packet: &Bytes, characters_to_pack: &Bytes) -> Bytes {
 
         let current_chunk_len = get_length_of_mask(pos, &mask, true);
         for index in 0..current_chunk_len {
-            if pos >  mask.len() {
+            if pos > mask.len() {
                 break;
             }
             if index % 0x7E == 0 {
@@ -70,7 +75,7 @@ pub fn pack(packet: &Bytes, characters_to_pack: &Bytes) -> Bytes {
                 output.push(current_value << 4);
             } else {
                 let output_length = output.len();
-                output[output_length-1] |= current_value;
+                output[output_length - 1] |= current_value;
             }
             pos += 1;
         }
@@ -91,7 +96,7 @@ pub fn unpack(packet: &Bytes, characters_to_unpack: &Bytes) -> Bytes {
         pos += 1;
 
         if is_packed {
-            for _ in 0..(current_chunk_length+1) / 2 {
+            for _ in 0..(current_chunk_length + 1) / 2 {
                 if pos >= packet.len() {
                     break;
                 }

@@ -1,5 +1,4 @@
 use crate::utils::{Bytes, pack, CLIENT_ENCRYPTION_TABLE};
-use std::num::Wrapping;
 
 pub fn encrypt(packet: &Bytes, session: u32, is_first_packet: bool) -> Bytes {
     let packed = pack(packet, &CLIENT_ENCRYPTION_TABLE.to_vec());
@@ -14,11 +13,11 @@ pub fn encrypt(packet: &Bytes, session: u32, is_first_packet: bool) -> Bytes {
 
     for byte in packed {
         output.push(match stype {
-            0 => (Wrapping(byte) + Wrapping(key) + Wrapping(0x40)).0 & 0xFF,
-            1 => (Wrapping(byte) - Wrapping(key) - Wrapping(0x40)).0 & 0xFF,
-            2 => ((Wrapping(byte) ^ Wrapping(0xC3)) + Wrapping(key) + Wrapping(0x40)).0 & 0xFF,
-            3 => ((Wrapping(byte) ^ Wrapping(0xC3)) - Wrapping(key) - Wrapping(0x40)).0 & 0xFF,
-            _ => (Wrapping(byte) + Wrapping(0xF)).0 & 0xFF,
+            0 => byte.wrapping_add(key).wrapping_add(0x40) & 0xFF,
+            1 => byte.wrapping_sub(key).wrapping_sub(0x40) & 0xFF,
+            2 => (byte ^ 0xC3).wrapping_add(key).wrapping_add(0x40) & 0xFF,
+            3 => (byte ^ 0xC3).wrapping_sub(key).wrapping_sub(0x40) & 0xFF,
+            _ => byte.wrapping_add(0xF) & 0xFF,
         })
     }
     output
@@ -26,7 +25,7 @@ pub fn encrypt(packet: &Bytes, session: u32, is_first_packet: bool) -> Bytes {
 
 #[cfg(test)]
 mod test {
-    use crate::world::encrypt::encrypt;
+    use crate::client::world::encrypt::encrypt;
     use encoding::{Encoding, EncoderTrap};
     use encoding::all::WINDOWS_1250;
 

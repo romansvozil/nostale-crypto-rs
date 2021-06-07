@@ -1,3 +1,3 @@
 mod utils;
-pub mod login;
-pub mod world;
+pub mod client;
+pub mod server;

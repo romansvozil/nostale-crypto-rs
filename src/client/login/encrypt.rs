@@ -1,5 +1,4 @@
 use crate::utils::Bytes;
-use std::num::Wrapping;
 
 pub fn encrypt(packet: &Bytes) -> Bytes {
     let mut packet = packet.clone();  // TODO: do not clone whole packet for adding one extra character..
@@ -8,7 +7,7 @@ pub fn encrypt(packet: &Bytes) -> Bytes {
         packet.push('\n' as u8);
     }
     for byte in packet {
-        let value = (Wrapping(byte ^ 0xC3) + Wrapping(0xF)).0;
+        let value = (byte ^ 0xC3).wrapping_add(0xF);
         output.push(value & 0xFF);
     }
     output
@@ -16,7 +15,7 @@ pub fn encrypt(packet: &Bytes) -> Bytes {
 
 #[cfg(test)]
 mod test {
-    use crate::login::encrypt::encrypt;
+    use crate::client::login::encrypt::encrypt;
 
     #[test]
     fn test_encrypt_new_line_ending() {

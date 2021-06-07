@@ -1,10 +1,9 @@
 use crate::utils::Bytes;
-use std::num::Wrapping;
 
 pub fn decrypt(packet: &Bytes) -> Bytes {
     let mut output = vec![];
     for &byte in packet {
-        let value = (Wrapping(byte) - Wrapping(0xF)).0;
+        let value = byte.wrapping_sub(0xF);
         output.push(value & 0xFF);
     }
     output
@@ -12,7 +11,7 @@ pub fn decrypt(packet: &Bytes) -> Bytes {
 
 #[cfg(test)]
 mod test {
-    use crate::login::decrypt::decrypt;
+    use crate::client::login::decrypt::decrypt;
 
     #[test]
     fn test_decrypt() {
