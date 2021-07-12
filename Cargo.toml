@@ -1,5 +1,5 @@
 [package]
-name = "nostale_crypto_rs"
+name = "nostale_crypto"
 version = "0.1.0"
 authors = ["Roman"]
 edition = "2018"
